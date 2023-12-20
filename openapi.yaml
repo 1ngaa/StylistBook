@@ -1,0 +1,475 @@
+openapi: 3.0.0
+info:
+  title: StylistBook API
+  description: API для взаимодействия с StylistBook
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.0
+servers:
+  - url: http://127.0.0.1/
+tags:
+  - name: auth
+    description: Авторизация
+  - name: user
+    description: Пользователь
+  - name: uslugi
+    description: Услуги
+  - name: admin
+    description: админ-панель
+paths:
+  /auth/logic/auth:
+    post:
+      tags:
+        - auth
+      summary: Авторизация пользователя через Telegram
+      description: Создание пользователя в базе данных с данными из Telegram
+      operationId: authUser
+      requestBody:
+        description: Add user to system
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auth'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/auth'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/auth'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/auth'
+        '400':
+          description: bad request
+  /auth/logic/logout:
+    get:
+      summary: Выход пользователя из аккаунта
+      operationId: userLogout
+      responses:
+        default:
+          description: success
+      tags:
+        - auth
+  /user/profile/:
+    get:
+      tags:
+        - user
+      summary: Получение информации о профиле пользователя
+      description: Рендер пользовательского профиля
+      operationId: getUserInfo
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/user'
+        '400':
+          description: access denied
+  /user/appointments/:
+    get:
+      tags:
+        - user
+      summary: Получение информации о записях
+      description: Рендер пользовательских записей
+      operationId: getUserappointments
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appointments'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/appointments'
+        '400':
+          description: access denied
+  /appointment/uslugi/:
+    get:
+      tags:
+        - uslugi
+      summary: Получение списка услуг
+      description: Эндпоинт для получения списка доступных услуг
+      operationId: getUslugi
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uslugi'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/uslugi'
+        '400':
+          description: Не удалось загрузить информацию о записях
+  /appointment/appointment/:
+    get:
+      tags:
+        - uslugi
+      summary: Получение информации из базы данных о конкретной услуги
+      operationId: getUslugaInfo
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/usluga'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/usluga'
+    post:
+      tags:
+        - uslugi
+      summary: Запись к стилисту
+      operationId: appointmentUsluga
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/addAppointment'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/addAppointment'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: access denied
+  /admin/users/:
+    summary: Все пользователи
+    description: Пользователи
+    get:
+      tags:
+        - admin
+      summary: Получение списка пользователей
+      description: Получение информации о пользователях
+      operationId: getUsersInfo
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/users'
+  /admin/users/{userID}:
+    delete:
+      tags:
+        - admin
+      summary: Удаление пользователя по его ID
+      operationId: deleteUser
+      parameters:
+        - name: userID
+          in: path
+          description: ID пользователя
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: access denied
+    put:
+      tags:
+        - admin
+      summary: Изменение прав пользователя
+      operationId: putUser
+      parameters:
+        - name: userID
+          in: path
+          description: ID пользователя
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: access denied
+  /admin/uslugi/:
+    get:
+      tags:
+        - admin
+      summary: Получение списка услуг
+      description: Получение списка всех услуг в системе
+      operationId: getAlluslugi
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uslugii'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/uslugii'
+  /admin/uslugi/{usluga_id}:
+    summary: Все услуги
+    description: Услуги
+    delete:
+      tags:
+        - admin
+      summary: Удаление услуги по его ID
+      operationId: deleteUsluga
+      parameters:
+        - name: usluga_id
+          in: path
+          description: ID услуги
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: access denied
+    put:
+      tags:
+        - admin
+      summary: Обновление услуги по его ID
+      operationId: updateUsluga
+      parameters:
+        - name: usluga_id
+          in: path
+          description: ID услуги
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Объект с обновленными данными услуги
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                  example: 1
+                name:
+                  type: string
+                  example: Разбор гардероба
+                  description: Новое название услуги
+                description:
+                  type: string
+                  example: Описание
+                  description: Новое описание услуги
+      responses:
+        '200':
+          description: Успешная операция. Возвращается обновленная услуга.
+        '400':
+          description: Ошибка доступа или некорректные данные запроса
+  /admin/appointments/:
+    get:
+      tags:
+        - admin
+      summary: Получение всех записей
+      description: Получение списка всех записей в системе
+      responses:
+        '200':
+          description: Успешное получение списка записей
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appointments'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/appointments'
+        '400':
+          description: Ошибка доступа или некорректные данные запроса
+  /admin/appointments/{appointment_id}:
+    put:
+      tags:
+        - admin
+      summary: Изменение статуса записи по его ID
+      description: Изменение статуса записи в системе
+      parameters:
+        - name: appointment_id
+          in: path
+          description: ID встречи
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json::
+            schema:
+              type: object
+              properties:
+                appointment_id:
+                  type: integer
+                  format: int64
+                  example: 1
+                status:
+                  type: string
+                  example: Новый статус записи (Confirmed, Denied, Processing)
+      responses:
+        '200':
+          description: Успешное изменение статуса записи
+        '400':
+          description: Ошибка доступа или некорректные данные запроса
+components:
+  schemas:
+    auth:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        first_name:
+          type: string
+          example: Имя
+        last_name:
+          type: string
+          example: Фамилия
+        telegram_id:
+          type: integer
+          format: int64
+          example: 123456789
+        telegram_username:
+          type: string
+          example: username
+        profile_picture:
+          type: string
+          example: https://t.me/i/userpic/320/ubdwvliblmlm
+        auth_date:
+          type: integer
+          format: int64
+          example: 1234567891
+        is_admin:
+          type: integer
+          format: int64
+          example: 0
+    user:
+      type: object
+      properties:
+        telegram_id:
+          type: integer
+          format: int64
+          example: 123456789
+        first_name:
+          type: string
+          example: Имя
+        telegramUsername:
+          type: string
+          example: username
+        is_admin:
+          type: integer
+          format: int64
+          example: 0
+    appointments:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: int64
+          example: 123456789
+        usluga_id:
+          type: integer
+          format: int64
+          example: 1
+        uslugaName::
+          type: string
+          example: Название услуги
+        date:
+          type: string
+          example:  2023-01-01
+        time:
+          type: string
+          example: 10:00
+        status:
+          type: string
+          example: Confirmed
+          description: ("Confirmed","Processing","Denied")
+    uslugi:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Карта стиля
+        description:
+          type: string
+          example: Описание услуги
+    usluga:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Карта стиля
+    addAppointment:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: int64
+          example: 7777777
+        usluga_id:
+          type: integer
+          format: int64
+          example: 1
+        date:
+          type: string
+          example: 2023-01-01
+        time:
+          type: string
+          example: 12:40
+    users:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        user_id:
+          type: integer
+          format: int64
+          example: 123456789
+        first_name:
+          type: string
+          example: Имя
+        is_admin:
+          type: integer
+          format: int64
+          example: 1
+    uslugii:
+      type: object
+      properties:
+        id:
+         type: object
+         format: int
+         example: 1
+        name: 
+         type: object
+         format: string
+         example: Стрижка
+        description: 
+         type: object
+         format: string
+         example: Профессиональная стрижка волос
+
+
