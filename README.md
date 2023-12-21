@@ -150,7 +150,7 @@ components:
           type: string
           example: 12:40
 ```
-Все методы:
+##### Все методы:
 ![text](https://i.imgur.com/5hW3HdS.png)
 ## Развёртывание
 1. Клонируйте репозиторий: 
